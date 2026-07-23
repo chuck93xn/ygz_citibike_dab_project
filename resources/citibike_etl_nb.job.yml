@@ -1,0 +1,66 @@
+resources:
+  jobs:
+    citibike_etl_nb:     # name modify
+      name: citibike_etl_pipeline_notebook     # name modify
+      tasks:
+        - task_key: 00_whl_upload
+          python_wheel_task:
+            package_name: ygz_citibike_dab_project
+            entry_point: main
+          environment_key: Default
+        - task_key: 01_bronze
+          depends_on:
+            - task_key: 00_whl_upload
+          notebook_task:
+            notebook_path: ..\citibike_etl\notebooks\01_bronze_nb.ipynb     # path modify
+            # add base_parameters to pass pipeline_id, run_id, task_id, and processed_timestamp to the notebook
+            base_parameters:
+              pipeline_id: "{{job.id}}"
+              run_id: "{{job.run_id}}"
+              task_id: "{{task.run_id}}"
+              processed_timestamp: "{{job.start_time.iso_datetime}}"
+              # pass catalog variable to the notebook
+              catalog: "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 02_silver
+          depends_on:
+            - task_key: 01_bronze
+          notebook_task:
+            notebook_path: ..\citibike_etl\notebooks\02_silver_nb.ipynb     # path modify
+            base_parameters:
+              pipeline_id: "{{job.id}}"
+              run_id: "{{job.run_id}}"
+              task_id: "{{task.run_id}}"
+              processed_timestamp: "{{job.start_time.iso_datetime}}"
+              catalog: "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 03_gold_daily_station
+          depends_on:
+            - task_key: 02_silver
+          notebook_task:
+            notebook_path: ..\citibike_etl\notebooks\03_gold_nb_daily_station.ipynb     # path modify
+            base_parameters:
+              catalog: "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 03_gold_daily_summary
+          depends_on:
+            - task_key: 02_silver
+          notebook_task:
+            notebook_path: ..\citibike_etl\notebooks\03_gold_nb_daily_summary.ipynb     # path modify
+            base_parameters:
+              catalog: "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+            # Reference to the wheel artifact built from this bundle.
+            dependencies:
+              - ../dist/*.whl
+      performance_target: STANDARD

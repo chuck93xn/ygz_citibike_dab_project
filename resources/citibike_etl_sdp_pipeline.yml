@@ -1,0 +1,20 @@
+resources:
+  pipelines:
+    pipeline_citibike_etl_pipeline:
+      name: citibike_etl_pipeline
+      configuration:
+        catalog: "${var.catalog}"
+      libraries:
+        - notebook:
+            path: ..\citibike_etl\sdp\01_bronze_sdp.ipynb
+        - notebook:
+            path: ..\citibike_etl\sdp\02_silver_sdp.ipynb
+        - notebook:
+            path: ..\citibike_etl\sdp\03_gold_sdp_daily_station.ipynb
+        - notebook:
+            path: ..\citibike_etl\sdp\03_gold_sdp_daily_summary.ipynb
+      schema: default
+      development: "${var.dev_flag}"
+      photon: true
+      catalog: "${var.catalog}"
+      serverless: true

@@ -1,0 +1,75 @@
+resources:
+  jobs:
+    citibike_etl_py_script:     # name modify
+      name: citibike_etl_pipeline_py_script     # name modify
+      tasks:
+        - task_key: 00_whl_upload
+          python_wheel_task:
+            # The path to the wheel file to be uploaded. The path is relative to the root of the bundle.
+            package_name: ygz_citibike_dab_project
+            entry_point: main
+          environment_key: Default
+        - task_key: 01_bronze
+          depends_on:
+            - task_key: 00_whl_upload
+          spark_python_task:
+            python_file: ..\citibike_etl\scripts\01_bronze_script.py     # path modify
+            # add base_parameters to pass pipeline_id, run_id, task_id, and processed_timestamp to the script
+            parameters:
+              - "{{job.id}}"
+              - "{{job.run_id}}"
+              - "{{task.run_id}}"
+              - "{{job.start_time.iso_datetime}}"
+              - "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 02_silver
+          depends_on:
+            - task_key: 01_bronze
+          spark_python_task:
+            python_file: ..\citibike_etl\scripts\02_silver_script.py     # path modify
+            parameters:
+              - "{{job.id}}"
+              - "{{job.run_id}}"
+              - "{{task.run_id}}"
+              - "{{job.start_time.iso_datetime}}"
+              - "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 03_gold_daily_station
+          depends_on:
+            - task_key: 02_silver
+          spark_python_task:
+            python_file: ..\citibike_etl\scripts\03_gold_script_daily_station.py     # path modify
+            parameters:
+              - "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 03_gold_daily_station
+          depends_on:
+            - task_key: 02_silver
+          spark_python_task:
+            python_file: ..\citibike_etl\scripts\03_gold_script_daily_station.py     # path modify
+            parameters:
+              - "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+        - task_key: 03_gold_daily_summary
+          depends_on:
+            - task_key: 02_silver
+          spark_python_task:
+            python_file: ..\citibike_etl\scripts\03_gold_script_daily_summary.py     # path modify
+            parameters:
+              - "${var.catalog}"
+            source: WORKSPACE
+          environment_key: Default
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+            # Reference to the wheel artifact built from this bundle.
+            dependencies:
+              - ../dist/*.whl
+      performance_target: STANDARD
