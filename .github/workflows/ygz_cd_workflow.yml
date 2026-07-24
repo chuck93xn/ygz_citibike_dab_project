@@ -34,6 +34,7 @@ jobs:
           host = https://adb-7405614713974958.18.azuredatabricks.net/
           client_id = ${{ secrets.TEST_CLIENT_ID }}
           client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
+          auth_type = oauth-m2m
           EOF
 
       - name: Deploy to TEST
@@ -72,6 +73,7 @@ jobs:
           host = https://adb-7405605159703263.3.azuredatabricks.net/
           client_id = ${{ secrets.PROD_CLIENT_ID }}
           client_secret = ${{ secrets.PROD_CLIENT_SECRET }}
+          auth_type = oauth-m2m
           EOF
 
       - name: Deploy to PROD
