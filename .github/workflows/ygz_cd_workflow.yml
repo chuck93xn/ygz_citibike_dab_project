@@ -25,14 +25,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install build
-      - name: Debug Databricks config
-        run: |
-          cat ~/.databrickscfg
-          echo "---"
-          echo -n "$DATABRICKS_CLIENT_SECRET" | wc -c
-        env:
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
-          
+
       # Configure the databricks profile
       # create .databrickscfg file in the home directory of vm
       - name: Configure Databricks
@@ -45,6 +38,14 @@ jobs:
           auth_type = oauth-m2m
           EOF
 
+      - name: Debug Databricks config
+        run: |
+          cat ~/.databrickscfg
+          echo "---"
+          echo -n "$DATABRICKS_CLIENT_SECRET" | wc -c
+        env:
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
+          
       - name: Deploy to TEST
         run: |
           databricks bundle deploy \
