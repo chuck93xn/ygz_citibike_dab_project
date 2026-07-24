@@ -50,8 +50,10 @@ targets:
       dev_flag:
         default: false
     permissions:
-      - user_name: 106018876@student.swin.edu.au
+      - service_principal_name: d311a39c-0fd9-43cc-8485-572bc361d91f
         level: CAN_MANAGE
+    run_as:
+      service_principal_name: d311a39c-0fd9-43cc-8485-572bc361d91f
 
   prod:
     mode: production
@@ -65,5 +67,8 @@ targets:
       dev_flag:
         default: false
     permissions:
-      - user_name: 106018876@student.swin.edu.au
+      - service_principal_name: 8bae55fc-35d9-49fc-b15f-83f545d8995b
         level: CAN_MANAGE
+    run_as:
+      service_principal_name: 8bae55fc-35d9-49fc-b15f-83f545d8995b
+
