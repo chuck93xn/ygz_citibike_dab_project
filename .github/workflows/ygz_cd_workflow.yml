@@ -40,11 +40,12 @@ jobs:
 
       - name: Debug Databricks config
         run: |
+          echo "=== file content (secret masked by GitHub automatically) ==="
           cat ~/.databrickscfg
-          echo "---"
-          echo -n "$DATABRICKS_CLIENT_SECRET" | wc -c
-        env:
-          DATABRICKS_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
+          echo "=== client_id length ==="
+          echo -n "${{ secrets.TEST_CLIENT_ID }}" | wc -c
+          echo "=== client_secret length ==="
+          echo -n "${{ secrets.TEST_CLIENT_SECRET }}" | wc -c
           
       - name: Deploy to TEST
         run: |
