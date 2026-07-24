@@ -1,5 +1,6 @@
 [run]
 parallel = true
+
 omit =
     # any files or globs you want to exclude
     src/ygz_citibike_dab_project/*.py
