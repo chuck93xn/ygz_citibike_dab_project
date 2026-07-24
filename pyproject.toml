@@ -27,8 +27,8 @@ main = "ygz_citibike_dab_project.main:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# [tool.hatch.build.targets.wheel]
-# packages = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
