@@ -1,0 +1,80 @@
+name: CD Workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cd-deploy-test:
+    name: Deploy to TEST
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v1.7.0
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install build
+
+      - name: Configure Databricks
+        run: |
+          cat <<EOF > ~/.databrickscfg
+          [TEST]
+          host = https://adb-7405614713974958.18.azuredatabricks.net/
+          client_id = ${{ secrets.TEST_CLIENT_ID }}
+          client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
+          EOF
+
+      - name: Deploy to TEST
+        run: |
+          databricks bundle deploy \
+            --target test \
+            --profile TEST
+
+  cd-deploy-prod:
+    name: Deploy to PROD
+    # dependency
+    needs: cd-deploy-test
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@v1.7.0
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install build
+
+      - name: Configure Databricks
+        run: |
+          cat <<EOF > ~/.databrickscfg
+          [PROD]
+          host = https://adb-7405605159703263.3.azuredatabricks.net/
+          client_id = ${{ secrets.PROD_CLIENT_ID }}
+          client_secret = ${{ secrets.PROD_CLIENT_SECRET }}
+          EOF
+
+      - name: Deploy to PROD
+        run: |
+          databricks bundle deploy \
+            --target prod \
+            --profile PROD
