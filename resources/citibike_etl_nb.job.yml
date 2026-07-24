@@ -12,7 +12,7 @@ resources:
           depends_on:
             - task_key: 00_whl_upload
           notebook_task:
-            notebook_path: ..\citibike_etl\notebooks\01_bronze_nb.ipynb     # path modify
+            notebook_path: ../citibike_etl/notebooks/01_bronze_nb.ipynb     # path modify
             # add base_parameters to pass pipeline_id, run_id, task_id, and processed_timestamp to the notebook
             base_parameters:
               pipeline_id: "{{job.id}}"
@@ -27,7 +27,7 @@ resources:
           depends_on:
             - task_key: 01_bronze
           notebook_task:
-            notebook_path: ..\citibike_etl\notebooks\02_silver_nb.ipynb     # path modify
+            notebook_path: ../citibike_etl/notebooks/02_silver_nb.ipynb     # path modify
             base_parameters:
               pipeline_id: "{{job.id}}"
               run_id: "{{job.run_id}}"
@@ -40,7 +40,7 @@ resources:
           depends_on:
             - task_key: 02_silver
           notebook_task:
-            notebook_path: ..\citibike_etl\notebooks\03_gold_nb_daily_station.ipynb     # path modify
+            notebook_path: ../citibike_etl/notebooks/03_gold_nb_daily_station.ipynb     # path modify
             base_parameters:
               catalog: "${var.catalog}"
             source: WORKSPACE
@@ -49,7 +49,7 @@ resources:
           depends_on:
             - task_key: 02_silver
           notebook_task:
-            notebook_path: ..\citibike_etl\notebooks\03_gold_nb_daily_summary.ipynb     # path modify
+            notebook_path: ../citibike_etl/notebooks/03_gold_nb_daily_summary.ipynb     # path modify
             base_parameters:
               catalog: "${var.catalog}"
             source: WORKSPACE
