@@ -35,6 +35,9 @@ jobs:
           client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
           EOF
 
+          echo "===== ~/.databrickscfg ====="
+          cat ~/.databrickscfg
+
       - name: Test Authentication
         run: |
           databricks current-user me --profile TEST
