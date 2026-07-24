@@ -25,7 +25,8 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install build
-
+      # Configure the databricks profile
+      # create .databrickscfg file in the home directory of vm
       - name: Configure Databricks
         run: |
           cat <<EOF > ~/.databrickscfg
@@ -34,13 +35,6 @@ jobs:
           client_id = ${{ secrets.TEST_CLIENT_ID }}
           client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
           EOF
-
-          echo "===== ~/.databrickscfg ====="
-          cat ~/.databrickscfg
-
-      - name: Test Authentication
-        run: |
-          databricks current-user me --profile TEST
 
       - name: Deploy to TEST
         run: |
