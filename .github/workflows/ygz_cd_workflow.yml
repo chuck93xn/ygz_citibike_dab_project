@@ -35,6 +35,10 @@ jobs:
           client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
           EOF
 
+      - name: Test Authentication
+        run: |
+          databricks current-user me --profile TEST
+
       - name: Deploy to TEST
         run: |
           databricks bundle deploy \
