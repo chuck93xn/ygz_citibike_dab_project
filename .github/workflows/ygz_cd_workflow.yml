@@ -27,7 +27,7 @@ jobs:
           pip install build
 
       # Configure the databricks profile
-      # create .databrickscfg file in the home directory of vm
+      # Create .databrickscfg file in the home directory of vm
       - name: Configure Databricks
         run: |
           cat <<EOF > ~/.databrickscfg
