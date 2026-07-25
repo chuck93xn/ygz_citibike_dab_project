@@ -30,16 +30,13 @@ jobs:
       # create .databrickscfg file in the home directory of vm
       - name: Configure Databricks
         run: |
-          cat <<'EOF' > ~/.databrickscfg
+          cat <<EOF > ~/.databrickscfg
           [TEST]
           host = https://adb-7405614713974958.18.azuredatabricks.net/
           client_id = ${{ secrets.TEST_CLIENT_ID }}
           client_secret = ${{ secrets.TEST_CLIENT_SECRET }}
           auth_type = oauth-m2m
           EOF
-        env:
-          TEST_CLIENT_ID: ${{ secrets.TEST_CLIENT_ID }}
-          TEST_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
           
       - name: Deploy to TEST
         run: |
@@ -72,16 +69,13 @@ jobs:
 
       - name: Configure Databricks
         run: |
-          cat <<'EOF' > ~/.databrickscfg
+          cat <<EOF > ~/.databrickscfg
           [PROD]
           host = https://adb-7405605159703263.3.azuredatabricks.net/
           client_id = ${{ secrets.PROD_CLIENT_ID }}
           client_secret = ${{ secrets.PROD_CLIENT_SECRET }}
           auth_type = oauth-m2m
           EOF
-        env:
-          TEST_CLIENT_ID: ${{ secrets.TEST_CLIENT_ID }}
-          TEST_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
 
       - name: Deploy to PROD
         run: |
