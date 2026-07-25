@@ -27,7 +27,7 @@ schema = StructType(
     ]
 )
 
-path = "/Volumes/dab_citibike_dev/00_landing/citibike_source_data/JC-202503-citibike-tripdata.csv"
+path = f"/Volumes/{catalog}/00_landing/citibike_source_data/JC-202503-citibike-tripdata.csv"
 df = spark.read.format("csv").schema(schema).option("header", True).load(path)
 
 df = df.withColumn(
